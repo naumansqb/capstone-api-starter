@@ -10,7 +10,6 @@ import org.yearup.data.ProductDao;
 import org.yearup.models.Category;
 import org.yearup.models.Product;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -21,25 +20,43 @@ public class CategoriesController
     private CategoryDao categoryDao;
     private ProductDao productDao;
     @Autowired
-    public CategoriesController(CategoryDao categoryDao,ProductDao productDao)
+    public CategoriesController(CategoryDao categoryDao, ProductDao productDao)
     {
         this.categoryDao = categoryDao;
         this.productDao = productDao;
-
     }
 
     @GetMapping
     public List<Category> getAll()
     {
-        return categoryDao.getAllCategories();
+        try
+        {
+            return categoryDao.getAllCategories();
+        }
+        catch(Exception e)
+        {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
+        }
     }
 
     @GetMapping("{id}")
-    public Category getById(@PathVariable int id){
-        Category c = categoryDao.getById(id);
-        if(c == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return c;
+    public Category getById(@PathVariable int id)
+    {
+        try
+        {
+            Category c = categoryDao.getById(id);
+            if(c == null)
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            return c;
+        }
+        catch(ResponseStatusException e)
+        {
+            throw e;
+        }
+        catch(Exception e)
+        {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
+        }
     }
 
     @GetMapping("{categoryId}/products")
@@ -47,12 +64,9 @@ public class CategoriesController
     {
         try
         {
-            List<Product> products = productDao.listByCategoryId(categoryId);
-            if(products == null)
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No products found with that categoryID");
-            return products;
+            return productDao.listByCategoryId(categoryId);
         }
-        catch(Exception ex)
+        catch(Exception e)
         {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
@@ -67,7 +81,7 @@ public class CategoriesController
         {
             return categoryDao.create(category);
         }
-        catch(Exception ex)
+        catch(Exception e)
         {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
@@ -75,14 +89,13 @@ public class CategoriesController
 
     @PutMapping("{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-
     public void updateCategory(@PathVariable int id, @RequestBody Category category)
     {
         try
         {
             categoryDao.update(id, category);
         }
-        catch(Exception ex)
+        catch(Exception e)
         {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
@@ -97,7 +110,7 @@ public class CategoriesController
         {
             categoryDao.delete(id);
         }
-        catch(Exception ex)
+        catch(Exception e)
         {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }

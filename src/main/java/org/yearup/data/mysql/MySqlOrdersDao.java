@@ -55,7 +55,7 @@ public class MySqlOrdersDao extends MySqlDaoBase implements OrdersDao {
             orderStatement.setString(4, profile.getCity());
             orderStatement.setString(5, profile.getState());
             orderStatement.setString(6, profile.getZip());
-            orderStatement.setBigDecimal(7, BigDecimal.valueOf(0.0));
+            orderStatement.setBigDecimal(7, BigDecimal.ZERO);
 
             orderStatement.executeUpdate();
 
@@ -83,7 +83,7 @@ public class MySqlOrdersDao extends MySqlDaoBase implements OrdersDao {
                         profile.getCity(),
                         profile.getState(),
                         profile.getZip(),
-                        BigDecimal.valueOf(0.0)
+                        BigDecimal.ZERO
                         );
             }else{
                 throw new RuntimeException("Failed to create order");

@@ -41,10 +41,6 @@ public class ShoppingCartController
             int userId = getUserId(principal);
             return shoppingCartDao.getByUserId(userId);
         }
-        catch(ResponseStatusException e)
-        {
-            throw e;
-        }
         catch(Exception e)
         {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
@@ -61,10 +57,6 @@ public class ShoppingCartController
             shoppingCartDao.addItem(userId, productId);
             return shoppingCartDao.getByUserId(userId);
         }
-        catch(ResponseStatusException e)
-        {
-            throw e;
-        }
         catch(Exception e)
         {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
@@ -80,10 +72,6 @@ public class ShoppingCartController
             shoppingCartDao.updateQuantity(userId, productId, item.getQuantity());
             return shoppingCartDao.getByUserId(userId);
         }
-        catch(ResponseStatusException e)
-        {
-            throw e;
-        }
         catch(Exception e)
         {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
@@ -91,17 +79,13 @@ public class ShoppingCartController
     }
 
     @DeleteMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCart(Principal principal)
+    public ShoppingCart deleteCart(Principal principal)
     {
         try
         {
             int userId = getUserId(principal);
             shoppingCartDao.deleteCart(userId);
-        }
-        catch(ResponseStatusException e)
-        {
-            throw e;
+            return shoppingCartDao.getByUserId(userId);
         }
         catch(Exception e)
         {

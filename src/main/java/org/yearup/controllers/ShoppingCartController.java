@@ -17,13 +17,13 @@ import java.security.Principal;
 @RestController
 @CrossOrigin
 @RequestMapping("cart")
+@PreAuthorize("hasAnyRole('ROLE_USER','ROLE_ADMIN')")
 public class ShoppingCartController
 {
     private ShoppingCartDao shoppingCartDao;
     private UserDao userDao;
     private ProductDao productDao;
 
-    @Autowired
     public ShoppingCartController(ShoppingCartDao shoppingCartDao, UserDao userDao, ProductDao productDao)
     {
         this.shoppingCartDao = shoppingCartDao;
@@ -31,16 +31,19 @@ public class ShoppingCartController
         this.productDao = productDao;
     }
 
+
+
     @GetMapping
     public ShoppingCart getCart(Principal principal)
     {
         try
         {
-            String userName = principal.getName();
-            User user = userDao.getByUserName(userName);
-            int userId = user.getId();
-
-            return null;
+            int userId = getUserId(principal);
+            return shoppingCartDao.getByUserId(userId);
+        }
+        catch(ResponseStatusException e)
+        {
+            throw e;
         }
         catch(Exception e)
         {
@@ -54,10 +57,13 @@ public class ShoppingCartController
     {
         try
         {
-            String userName = principal.getName();
-            User user = userDao.getByUserName(userName);
-            int userId = user.getId();
-            return null;
+            int userId = getUserId(principal);
+            shoppingCartDao.addItem(userId, productId);
+            return shoppingCartDao.getByUserId(userId);
+        }
+        catch(ResponseStatusException e)
+        {
+            throw e;
         }
         catch(Exception e)
         {
@@ -66,15 +72,17 @@ public class ShoppingCartController
     }
 
     @PutMapping("/products/{productId}")
-    public void updateCartItem(@PathVariable int productId, @RequestBody ShoppingCartItem item, Principal principal)
+    public ShoppingCart updateCartItem(@PathVariable int productId, @RequestBody ShoppingCartItem item, Principal principal)
     {
         try
         {
-            String userName = principal.getName();
-            User user = userDao.getByUserName(userName);
-            int userId = user.getId();
-
-
+            int userId = getUserId(principal);
+            shoppingCartDao.updateQuantity(userId, productId, item.getQuantity());
+            return shoppingCartDao.getByUserId(userId);
+        }
+        catch(ResponseStatusException e)
+        {
+            throw e;
         }
         catch(Exception e)
         {
@@ -84,18 +92,28 @@ public class ShoppingCartController
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void clearCart(Principal principal)
+    public void deleteCart(Principal principal)
     {
         try
         {
-            String userName = principal.getName();
-            User user = userDao.getByUserName(userName);
-            int userId = user.getId();
-
+            int userId = getUserId(principal);
+            shoppingCartDao.deleteCart(userId);
+        }
+        catch(ResponseStatusException e)
+        {
+            throw e;
         }
         catch(Exception e)
         {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
+    }
+    private int getUserId(Principal principal)
+    {
+        String userName = principal.getName();
+        User user = userDao.getByUserName(userName);
+        if(user == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found.");
+        return user.getId();
     }
 }

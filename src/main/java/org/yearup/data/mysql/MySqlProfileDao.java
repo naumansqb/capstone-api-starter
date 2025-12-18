@@ -27,14 +27,14 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     return new Profile(userId,
-                            resultSet.getString(1),
                             resultSet.getString(2),
                             resultSet.getString(3),
                             resultSet.getString(4),
                             resultSet.getString(5),
                             resultSet.getString(6),
                             resultSet.getString(7),
-                            resultSet.getString(8));
+                            resultSet.getString(8),
+                            resultSet.getString(9));
                 }
                 return null;
             }

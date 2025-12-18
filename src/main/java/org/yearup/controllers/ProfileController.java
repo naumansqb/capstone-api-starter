@@ -32,7 +32,7 @@ public class ProfileController {
         try
         {
             int userId = getUserId(principal);
-            return null;
+            return profileDao.getProfile(userId);
         }
         catch(Exception e)
         {
@@ -46,7 +46,8 @@ public class ProfileController {
         try
         {
             int userId = getUserId(principal);
-            return null;
+            profileDao.update(userId, profile);
+            return profileDao.getProfile(userId);
         }
         catch(Exception e)
         {

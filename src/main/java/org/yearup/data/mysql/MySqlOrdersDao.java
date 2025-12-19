@@ -27,6 +27,12 @@ public class MySqlOrdersDao extends MySqlDaoBase implements OrdersDao {
         this.shoppingCartDao = shoppingCartDao;
     }
 
+    /**
+     * Creates an order from the user's cart. Uses profile for shipping address,
+     * saves each cart item as a line item, then clears the cart.
+     * @param userId the user id
+     * @return the new order
+     */
     @Override
     public Order create(int userId) {
         ShoppingCart shoppingCart = shoppingCartDao.getByUserId(userId);

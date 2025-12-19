@@ -1,11 +1,9 @@
 package org.yearup.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.yearup.data.ProductDao;
 import org.yearup.data.ShoppingCartDao;
 import org.yearup.data.UserDao;
 import org.yearup.models.ShoppingCart;
@@ -22,17 +20,19 @@ public class ShoppingCartController
 {
     private ShoppingCartDao shoppingCartDao;
     private UserDao userDao;
-    private ProductDao productDao;
 
-    public ShoppingCartController(ShoppingCartDao shoppingCartDao, UserDao userDao, ProductDao productDao)
+
+    public ShoppingCartController(ShoppingCartDao shoppingCartDao, UserDao userDao)
     {
         this.shoppingCartDao = shoppingCartDao;
         this.userDao = userDao;
-        this.productDao = productDao;
     }
 
-
-
+    /**
+     * Gets the cart for the logged-in user.
+     * @param principal logged-in user
+     * @return the shopping cart
+     */
     @GetMapping
     public ShoppingCart getCart(Principal principal)
     {
@@ -47,6 +47,12 @@ public class ShoppingCartController
         }
     }
 
+    /**
+     * Adds a product to the cart. If it already exists, bumps up quantity by 1.
+     * @param productId the product to add
+     * @param principal logged-in user
+     * @return the updated cart
+     */
     @PostMapping("/products/{productId}")
     @ResponseStatus(HttpStatus.CREATED)
     public ShoppingCart addProductToCart(@PathVariable int productId, Principal principal)
@@ -63,6 +69,13 @@ public class ShoppingCartController
         }
     }
 
+    /**
+     * Updates quantity of a product in the cart.
+     * @param productId the product to update
+     * @param item has the new quantity
+     * @param principal logged-in user
+     * @return the updated cart
+     */
     @PutMapping("/products/{productId}")
     public ShoppingCart updateCartItem(@PathVariable int productId, @RequestBody ShoppingCartItem item, Principal principal)
     {
@@ -78,6 +91,11 @@ public class ShoppingCartController
         }
     }
 
+    /**
+     * Clears everything from the cart.
+     * @param principal logged-in user
+     * @return the empty cart
+     */
     @DeleteMapping
     public ShoppingCart deleteCart(Principal principal)
     {
@@ -92,6 +110,12 @@ public class ShoppingCartController
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
     }
+
+    /**
+     * Helper to get the user id from principal.
+     * @param principal logged-in user
+     * @return the user id
+     */
     private int getUserId(Principal principal)
     {
         String userName = principal.getName();

@@ -25,6 +25,11 @@ public class OrdersController {
         this.userDao = userDao;
     }
 
+    /**
+     * Checkout - creates an order from the cart and clears it.
+     * @param principal logged-in user
+     * @return the new order
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Order checkOutOrder(Principal principal) {
@@ -36,6 +41,11 @@ public class OrdersController {
         }
     }
 
+    /**
+     * Helper to get the user id from principal.
+     * @param principal logged-in user
+     * @return the user id
+     */
     private int getUserId(Principal principal) {
         String userName = principal.getName();
         User user = userDao.getByUserName(userName);

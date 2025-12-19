@@ -21,6 +21,10 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
         super(dataSource);
     }
 
+    /**
+     * Gets all categories from the database.
+     * @return list of all categories
+     */
     @Override
     public List<Category> getAllCategories()
     {
@@ -41,6 +45,11 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
         return categories;
     }
 
+    /**
+     * Gets a category by id.
+     * @param categoryId the category id
+     * @return the category or null if not found
+     */
     @Override
     public Category getById(int categoryId)
     {
@@ -65,6 +74,11 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
         return null;
     }
 
+    /**
+     * Inserts a new category into the database.
+     * @param category the category to insert
+     * @return the category with its new id
+     */
     @Override
     public Category create(Category category)
     {
@@ -99,6 +113,11 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
         return null;
     }
 
+    /**
+     * Updates a category in the database.
+     * @param categoryId the category id to update
+     * @param category the new category data
+     */
     @Override
     public void update(int categoryId, Category category)
     {
@@ -124,6 +143,10 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
         }
     }
 
+    /**
+     * Deletes a category from the database.
+     * @param categoryId the category id to delete
+     */
     @Override
     public void delete(int categoryId)
     {
@@ -141,6 +164,12 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
         }
     }
 
+    /**
+     * Maps a row from the result set to a Category object.
+     * @param row the result set row
+     * @return the Category object
+     * @throws SQLException if something goes wrong
+     */
     private Category mapRow(ResultSet row) throws SQLException
     {
         int categoryId = row.getInt("category_id");

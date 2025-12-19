@@ -1,6 +1,5 @@
 package org.yearup.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +25,10 @@ public class CategoriesController
         this.productDao = productDao;
     }
 
+    /**
+     * Gets all categories.
+     * @return list of all categories
+     */
     @GetMapping
     public List<Category> getAll()
     {
@@ -39,6 +42,11 @@ public class CategoriesController
         }
     }
 
+    /**
+     * Gets a category by id.
+     * @param id the category id
+     * @return the category
+     */
     @GetMapping("{id}")
     public Category getById(@PathVariable int id)
     {
@@ -59,6 +67,11 @@ public class CategoriesController
         }
     }
 
+    /**
+     * Gets all products in a category.
+     * @param categoryId the category id
+     * @return list of products
+     */
     @GetMapping("{categoryId}/products")
     public List<Product> getProductsById(@PathVariable int categoryId)
     {
@@ -72,6 +85,11 @@ public class CategoriesController
         }
     }
 
+    /**
+     * Adds a new category - admin only.
+     * @param category the category to add
+     * @return the new category with id
+     */
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
@@ -87,6 +105,11 @@ public class CategoriesController
         }
     }
 
+    /**
+     * Updates a category - admin only.
+     * @param id the category id
+     * @param category the updated category data
+     */
     @PutMapping("{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void updateCategory(@PathVariable int id, @RequestBody Category category)
@@ -101,6 +124,10 @@ public class CategoriesController
         }
     }
 
+    /**
+     * Deletes a category - admin only.
+     * @param id the category id
+     */
     @DeleteMapping("{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)

@@ -1,6 +1,5 @@
 package org.yearup.data.mysql;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yearup.data.ProductDao;
 import org.yearup.data.ShoppingCartDao;
@@ -24,6 +23,11 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
         this.productDao = productDao;
     }
 
+    /**
+     * Gets the cart for a user.
+     * @param userId the user id
+     * @return the cart with all items
+     */
     @Override
     public ShoppingCart getByUserId(int userId) {
         ShoppingCart shoppingCart = new ShoppingCart();
@@ -43,6 +47,11 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
         return shoppingCart;
     }
 
+    /**
+     * Adds a product to cart. If already there, bumps quantity by 1.
+     * @param userId the user id
+     * @param productId the product to add
+     */
     @Override
     public void addItem(int userId, int productId) {
         ShoppingCart cart = getByUserId(userId);
@@ -64,6 +73,12 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
         }
     }
 
+    /**
+     * Updates quantity of an item in the cart.
+     * @param userId the user id
+     * @param productId the product id
+     * @param quantity the new quantity
+     */
     @Override
     public void updateQuantity(int userId, int productId, int quantity) {
         String sql = """
@@ -84,6 +99,10 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
 
     }
 
+    /**
+     * Clears all items from the user's cart.
+     * @param userId the user id
+     */
     @Override
     public void deleteCart(int userId) {
         String sql = "DELETE FROM shopping_cart WHERE user_id = ?";
@@ -96,6 +115,12 @@ public class MySqlShoppingCartDao extends MySqlDaoBase implements ShoppingCartDa
         }
     }
 
+    /**
+     * Maps a row to a ShoppingCartItem.
+     * @param row the result set row
+     * @return the ShoppingCartItem
+     * @throws SQLException if something goes wrong
+     */
     private ShoppingCartItem mapRow(ResultSet row) throws SQLException {
         int productId = row.getInt("product_id");
         int quantity = row.getInt("quantity");

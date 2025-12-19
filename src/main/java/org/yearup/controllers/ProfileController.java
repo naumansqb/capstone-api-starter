@@ -26,6 +26,11 @@ public class ProfileController {
         this.userDao = userDao;
     }
 
+    /**
+     * Gets the profile for the logged-in user.
+     * @param principal logged-in user
+     * @return the profile
+     */
     @GetMapping
     public Profile getProfile(Principal principal)
     {
@@ -40,6 +45,12 @@ public class ProfileController {
         }
     }
 
+    /**
+     * Updates the profile for the logged-in user.
+     * @param profile the new profile data
+     * @param principal logged-in user
+     * @return the updated profile
+     */
     @PutMapping
     public Profile updateProfile(@RequestBody Profile profile, Principal principal)
     {
@@ -55,6 +66,11 @@ public class ProfileController {
         }
     }
 
+    /**
+     * Helper to get the user id from principal.
+     * @param principal logged-in user
+     * @return the user id
+     */
     private int getUserId(Principal principal)
     {
         String userName = principal.getName();

@@ -1,6 +1,5 @@
 package org.yearup.data.mysql;
 
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 import org.yearup.models.Profile;
 import org.yearup.data.ProfileDao;
@@ -10,10 +9,19 @@ import java.sql.*;
 
 @Component
 public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao {
+
+    /**
+     * @param dataSource connection to database
+     */
     public MySqlProfileDao(DataSource dataSource) {
         super(dataSource);
     }
 
+    /**
+     * Gets a user's profile.
+     * @param userId the user id
+     * @return the profile or null if not found
+     */
     @Override
     public Profile getProfile(int userId) {
         String sql = """
@@ -43,6 +51,11 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao {
         }
     }
 
+    /**
+     * Creates a new profile.
+     * @param profile the profile to create
+     * @return the created profile
+     */
     @Override
     public Profile create(Profile profile) {
         String sql = "INSERT INTO profiles (user_id, first_name, last_name, phone, email, address, city, state, zip) " +
@@ -68,6 +81,11 @@ public class MySqlProfileDao extends MySqlDaoBase implements ProfileDao {
         }
     }
 
+    /**
+     * Updates a user's profile.
+     * @param userId the user id
+     * @param profile the new profile data
+     */
     @Override
     public void update(int userId, Profile profile) {
         String sql = """
